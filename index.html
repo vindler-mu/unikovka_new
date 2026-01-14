@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Domácí knihovna</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📚 Domácí knihovna</h1>
+            <p class="subtitle">Spravujte svou osobní sbírku knih</p>
+        </header>
+
+        <main>
+            <!-- Formulář pro přidání knihy -->
+            <section class="add-book-section">
+                <h2>Přidat novou knihu</h2>
+                <form id="bookForm">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="title">Název knihy *</label>
+                            <input type="text" id="title" required placeholder="např. 1984">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="author">Autor *</label>
+                            <input type="text" id="author" required placeholder="např. George Orwell">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="year">Rok vydání</label>
+                            <input type="number" id="year" min="1000" max="2100" placeholder="např. 1949">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="genre">Žánr</label>
+                            <select id="genre">
+                                <option value="">Vyberte žánr</option>
+                                <option value="Beletrie">Beletrie</option>
+                                <option value="Sci-Fi">Sci-Fi</option>
+                                <option value="Fantasy">Fantasy</option>
+                                <option value="Detektivka">Detektivka</option>
+                                <option value="Romance">Romance</option>
+                                <option value="Historický román">Historický román</option>
+                                <option value="Poezie">Poezie</option>
+                                <option value="Odborná literatura">Odborná literatura</option>
+                                <option value="Životopis">Životopis</option>
+                                <option value="Ostatní">Ostatní</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="isbn">ISBN</label>
+                            <input type="text" id="isbn" placeholder="např. 978-80-00-05795-9">
+                        </div>
+
+                        <div class="form-group status-group">
+                            <label for="status">Stav čtení</label>
+                            <select id="status">
+                                <option value="Nečteno">Nečteno</option>
+                                <option value="Čtu">Čtu</option>
+                                <option value="Přečteno">Přečteno</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="notes">Poznámky</label>
+                        <textarea id="notes" rows="3" placeholder="Vaše poznámky k této knize..."></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Přidat knihu</button>
+                </form>
+            </section>
+
+            <!-- Vyhledávání a filtry -->
+            <section class="filter-section">
+                <div class="filter-controls">
+                    <div class="search-box">
+                        <input type="text" id="searchInput" placeholder="🔍 Hledat podle názvu nebo autora...">
+                    </div>
+
+                    <div class="filter-box">
+                        <select id="genreFilter">
+                            <option value="">Všechny žánry</option>
+                            <option value="Beletrie">Beletrie</option>
+                            <option value="Sci-Fi">Sci-Fi</option>
+                            <option value="Fantasy">Fantasy</option>
+                            <option value="Detektivka">Detektivka</option>
+                            <option value="Romance">Romance</option>
+                            <option value="Historický román">Historický román</option>
+                            <option value="Poezie">Poezie</option>
+                            <option value="Odborná literatura">Odborná literatura</option>
+                            <option value="Životopis">Životopis</option>
+                            <option value="Ostatní">Ostatní</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-box">
+                        <select id="statusFilter">
+                            <option value="">Všechny stavy</option>
+                            <option value="Nečteno">Nečteno</option>
+                            <option value="Čtu">Čtu</option>
+                            <option value="Přečteno">Přečteno</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="stats">
+                    <span id="bookCount">Celkem knih: 0</span>
+                </div>
+            </section>
+
+            <!-- Seznam knih -->
+            <section class="books-section">
+                <h2>Moje knihy</h2>
+                <div id="booksList" class="books-grid">
+                    <!-- Knihy se zobrazí zde -->
+                </div>
+
+                <div id="emptyState" class="empty-state">
+                    <p>📖 Zatím nemáte žádné knihy v knihovně.</p>
+                    <p>Začněte přidáním své první knihy!</p>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>Domácí knihovna &copy; 2026 | Data jsou uložena lokálně ve vašem prohlížeči</p>
+        </footer>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
