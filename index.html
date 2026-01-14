@@ -3,21 +3,66 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Moderní aplikace pro správu osobní knihovny">
+    <meta name="theme-color" content="#2563eb">
     <title>Domácí knihovna</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>📚</text></svg>">
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>📚 Domácí knihovna</h1>
-            <p class="subtitle">Spravujte svou osobní sbírku knih</p>
+            <div class="header-content">
+                <div class="header-left">
+                    <h1>📚 Domácí knihovna</h1>
+                    <p class="subtitle">Moderní správa osobní sbírky knih</p>
+                </div>
+                <div class="header-controls">
+                    <button id="themeToggle" class="icon-btn" title="Přepnout tmavý/světlý režim">
+                        <svg class="sun-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="5"></circle>
+                            <line x1="12" y1="1" x2="12" y2="3"></line>
+                            <line x1="12" y1="21" x2="12" y2="23"></line>
+                            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                            <line x1="1" y1="12" x2="3" y2="12"></line>
+                            <line x1="21" y1="12" x2="23" y2="12"></line>
+                            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                        </svg>
+                        <svg class="moon-icon hidden" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                        </svg>
+                    </button>
+                    <button id="exportBtn" class="icon-btn" title="Exportovat knihovnu">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="7 10 12 15 17 10"></polyline>
+                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                    </button>
+                    <button id="importBtn" class="icon-btn" title="Importovat knihovnu">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="17 8 12 3 7 8"></polyline>
+                            <line x1="12" y1="3" x2="12" y2="15"></line>
+                        </svg>
+                    </button>
+                    <input type="file" id="importFile" accept=".json" class="hidden">
+                </div>
+            </div>
         </header>
 
         <main>
-            <!-- Formulář pro přidání knihy -->
-            <section class="add-book-section">
-                <h2>Přidat novou knihu</h2>
+            <!-- Formulář pro přidání/editaci knihy -->
+            <section class="add-book-section" id="bookFormSection">
+                <div class="section-header">
+                    <h2 id="formTitle">Přidat novou knihu</h2>
+                    <button id="cancelEdit" class="btn btn-secondary hidden">Zrušit</button>
+                </div>
                 <form id="bookForm">
+                    <input type="hidden" id="editBookId">
                     <div class="form-grid">
                         <div class="form-group">
                             <label for="title">Název knihy *</label>
@@ -67,11 +112,30 @@
                     </div>
 
                     <div class="form-group">
+                        <label for="rating">Hodnocení</label>
+                        <div class="rating-input" id="ratingInput">
+                            <span class="star" data-value="1">☆</span>
+                            <span class="star" data-value="2">☆</span>
+                            <span class="star" data-value="3">☆</span>
+                            <span class="star" data-value="4">☆</span>
+                            <span class="star" data-value="5">☆</span>
+                        </div>
+                        <input type="hidden" id="rating" value="0">
+                    </div>
+
+                    <div class="form-group">
                         <label for="notes">Poznámky</label>
                         <textarea id="notes" rows="3" placeholder="Vaše poznámky k této knize..."></textarea>
                     </div>
 
-                    <button type="submit" class="btn btn-primary">Přidat knihu</button>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary" id="submitBtn">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                            Přidat knihu
+                        </button>
+                    </div>
                 </form>
             </section>
 
@@ -79,7 +143,11 @@
             <section class="filter-section">
                 <div class="filter-controls">
                     <div class="search-box">
-                        <input type="text" id="searchInput" placeholder="🔍 Hledat podle názvu nebo autora...">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <path d="m21 21-4.35-4.35"></path>
+                        </svg>
+                        <input type="text" id="searchInput" placeholder="Hledat podle názvu, autora nebo ISBN...">
                     </div>
 
                     <div class="filter-box">
@@ -106,29 +174,90 @@
                             <option value="Přečteno">Přečteno</option>
                         </select>
                     </div>
+
+                    <div class="filter-box">
+                        <select id="sortBy">
+                            <option value="dateAdded">Datum přidání</option>
+                            <option value="title">Název (A-Z)</option>
+                            <option value="author">Autor (A-Z)</option>
+                            <option value="rating">Hodnocení</option>
+                            <option value="year">Rok vydání</option>
+                        </select>
+                    </div>
+
+                    <div class="view-toggle">
+                        <button id="gridView" class="view-btn active" title="Mřížka">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="3" width="7" height="7"></rect>
+                                <rect x="14" y="3" width="7" height="7"></rect>
+                                <rect x="14" y="14" width="7" height="7"></rect>
+                                <rect x="3" y="14" width="7" height="7"></rect>
+                            </svg>
+                        </button>
+                        <button id="listView" class="view-btn" title="Seznam">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="8" y1="6" x2="21" y2="6"></line>
+                                <line x1="8" y1="12" x2="21" y2="12"></line>
+                                <line x1="8" y1="18" x2="21" y2="18"></line>
+                                <line x1="3" y1="6" x2="3.01" y2="6"></line>
+                                <line x1="3" y1="12" x2="3.01" y2="12"></line>
+                                <line x1="3" y1="18" x2="3.01" y2="18"></line>
+                            </svg>
+                        </button>
+                    </div>
                 </div>
 
-                <div class="stats">
-                    <span id="bookCount">Celkem knih: 0</span>
+                <div class="stats-row">
+                    <div class="stat-card">
+                        <div class="stat-icon">📚</div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="totalBooks">0</div>
+                            <div class="stat-label">Celkem knih</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">✅</div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="readBooks">0</div>
+                            <div class="stat-label">Přečteno</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">📖</div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="readingBooks">0</div>
+                            <div class="stat-label">Čtu</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">⭐</div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="avgRating">0.0</div>
+                            <div class="stat-label">Průměrné hodnocení</div>
+                        </div>
+                    </div>
                 </div>
             </section>
 
             <!-- Seznam knih -->
             <section class="books-section">
-                <h2>Moje knihy</h2>
                 <div id="booksList" class="books-grid">
                     <!-- Knihy se zobrazí zde -->
                 </div>
 
                 <div id="emptyState" class="empty-state">
-                    <p>📖 Zatím nemáte žádné knihy v knihovně.</p>
-                    <p>Začněte přidáním své první knihy!</p>
+                    <div class="empty-icon">📚</div>
+                    <h3>Zatím nemáte žádné knihy</h3>
+                    <p>Začněte budovat svou knihovnu přidáním první knihy</p>
                 </div>
             </section>
         </main>
 
         <footer>
             <p>Domácí knihovna &copy; 2026 | Data jsou uložena lokálně ve vašem prohlížeči</p>
+            <p class="footer-links">
+                <a href="https://github.com/vindler-mu/unikovka_new" target="_blank">GitHub</a>
+            </p>
         </footer>
     </div>
 
