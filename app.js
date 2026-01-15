@@ -36,6 +36,7 @@ class LibraryApp {
         this.totalBooksEl = document.getElementById('totalBooks');
         this.readBooksEl = document.getElementById('readBooks');
         this.readingBooksEl = document.getElementById('readingBooks');
+        this.borrowedBooksEl = document.getElementById('borrowedBooks');
         this.avgRatingEl = document.getElementById('avgRating');
     }
 
@@ -149,7 +150,15 @@ class LibraryApp {
             year: document.getElementById('year').value.trim(),
             genre: document.getElementById('genre').value,
             isbn: document.getElementById('isbn').value.trim(),
+            publisher: document.getElementById('publisher').value.trim(),
+            inventoryNumber: document.getElementById('inventoryNumber').value.trim(),
+            location: document.getElementById('location').value.trim(),
+            acquisitionDate: document.getElementById('acquisitionDate').value,
+            price: document.getElementById('price').value.trim(),
             status: document.getElementById('status').value,
+            condition: document.getElementById('condition').value,
+            borrower: document.getElementById('borrower').value.trim(),
+            borrowDate: document.getElementById('borrowDate').value,
             rating: parseInt(document.getElementById('rating').value) || 0,
             notes: document.getElementById('notes').value.trim(),
         };
@@ -204,7 +213,15 @@ class LibraryApp {
         document.getElementById('year').value = book.year || '';
         document.getElementById('genre').value = book.genre || '';
         document.getElementById('isbn').value = book.isbn || '';
+        document.getElementById('publisher').value = book.publisher || '';
+        document.getElementById('inventoryNumber').value = book.inventoryNumber || '';
+        document.getElementById('location').value = book.location || '';
+        document.getElementById('acquisitionDate').value = book.acquisitionDate || '';
+        document.getElementById('price').value = book.price || '';
         document.getElementById('status').value = book.status;
+        document.getElementById('condition').value = book.condition || 'Velmi dobrá';
+        document.getElementById('borrower').value = book.borrower || '';
+        document.getElementById('borrowDate').value = book.borrowDate || '';
         document.getElementById('notes').value = book.notes || '';
 
         this.setRating(book.rating || 0);
@@ -323,12 +340,13 @@ class LibraryApp {
     }
 
     createBookCard(book) {
-        const statusClass = book.status.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+        const statusClass = book.status.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/\s+/g, '-');
         const rating = book.rating || 0;
         const stars = '★'.repeat(rating) + '☆'.repeat(5 - rating);
+        const isBorrowed = book.borrower && book.borrower.trim() !== '';
 
         return `
-            <div class="book-card">
+            <div class="book-card ${isBorrowed ? 'borrowed' : ''}">
                 <div>
                     <h3>${this.escapeHtml(book.title)}</h3>
                     <p class="author">${this.escapeHtml(book.author)}</p>
@@ -336,10 +354,16 @@ class LibraryApp {
                     ${rating > 0 ? `<div class="book-rating" title="${rating} hvězdiček">${stars}</div>` : ''}
 
                     <div class="book-details">
+                        ${book.inventoryNumber ? `<p><strong>Inv. č.:</strong> ${this.escapeHtml(book.inventoryNumber)}</p>` : ''}
                         ${book.year ? `<p><strong>Rok:</strong> ${this.escapeHtml(book.year)}</p>` : ''}
+                        ${book.publisher ? `<p><strong>Vydavatel:</strong> ${this.escapeHtml(book.publisher)}</p>` : ''}
                         ${book.genre ? `<p><strong>Žánr:</strong> <span class="genre-badge">${this.escapeHtml(book.genre)}</span></p>` : ''}
                         ${book.isbn ? `<p><strong>ISBN:</strong> ${this.escapeHtml(book.isbn)}</p>` : ''}
-                        <p><strong>Stav:</strong> <span class="status-badge ${statusClass}">${this.escapeHtml(book.status)}</span></p>
+                        ${book.location ? `<p><strong>Umístění:</strong> ${this.escapeHtml(book.location)}</p>` : ''}
+                        ${book.condition ? `<p><strong>Stav knihy:</strong> ${this.escapeHtml(book.condition)}</p>` : ''}
+                        ${book.price ? `<p><strong>Cena:</strong> ${this.escapeHtml(book.price)} Kč</p>` : ''}
+                        <p><strong>Stav čtení:</strong> <span class="status-badge ${statusClass}">${this.escapeHtml(book.status)}</span></p>
+                        ${isBorrowed ? `<p class="borrowed-info"><strong>📤 Vypůjčeno:</strong> ${this.escapeHtml(book.borrower)}${book.borrowDate ? ` (${this.formatDate(book.borrowDate)})` : ''}</p>` : ''}
                     </div>
 
                     ${book.notes ? `<div class="book-notes"><strong>Poznámky:</strong> ${this.escapeHtml(book.notes)}</div>` : ''}
@@ -365,10 +389,17 @@ class LibraryApp {
         `;
     }
 
+    formatDate(dateString) {
+        if (!dateString) return '';
+        const date = new Date(dateString);
+        return date.toLocaleDateString('cs-CZ');
+    }
+
     updateStats() {
         const total = this.books.length;
         const read = this.books.filter(b => b.status === 'Přečteno').length;
         const reading = this.books.filter(b => b.status === 'Čtu').length;
+        const borrowed = this.books.filter(b => b.borrower && b.borrower.trim() !== '').length;
 
         const ratedBooks = this.books.filter(b => b.rating > 0);
         const avgRating = ratedBooks.length > 0
@@ -378,6 +409,7 @@ class LibraryApp {
         this.totalBooksEl.textContent = total;
         this.readBooksEl.textContent = read;
         this.readingBooksEl.textContent = reading;
+        this.borrowedBooksEl.textContent = borrowed;
         this.avgRatingEl.textContent = avgRating;
     }
 
