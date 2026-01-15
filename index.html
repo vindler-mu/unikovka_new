@@ -101,13 +101,60 @@
                             <input type="text" id="isbn" placeholder="např. 978-80-00-05795-9">
                         </div>
 
+                        <div class="form-group">
+                            <label for="publisher">Vydavatel</label>
+                            <input type="text" id="publisher" placeholder="např. Nakladatelství XYZ">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="inventoryNumber">Inventární číslo</label>
+                            <input type="text" id="inventoryNumber" placeholder="např. INV-2024-001">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="location">Umístění</label>
+                            <input type="text" id="location" placeholder="např. Polička A-12">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="acquisitionDate">Datum nabytí</label>
+                            <input type="date" id="acquisitionDate">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="price">Cena (Kč)</label>
+                            <input type="number" id="price" min="0" placeholder="např. 299">
+                        </div>
+
                         <div class="form-group status-group">
                             <label for="status">Stav čtení</label>
                             <select id="status">
                                 <option value="Nečteno">Nečteno</option>
                                 <option value="Čtu">Čtu</option>
                                 <option value="Přečteno">Přečteno</option>
+                                <option value="Nedočetl jsem, je to blbost">Nedočetl jsem, je to blbost</option>
                             </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="condition">Stav knihy</label>
+                            <select id="condition">
+                                <option value="Nová">Nová</option>
+                                <option value="Velmi dobrá">Velmi dobrá</option>
+                                <option value="Dobrá">Dobrá</option>
+                                <option value="Uspokojivá">Uspokojivá</option>
+                                <option value="Poškozená">Poškozená</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="borrower">Vypůjčeno komu</label>
+                            <input type="text" id="borrower" placeholder="Jméno vypůjčitele">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="borrowDate">Datum výpůjčky</label>
+                            <input type="date" id="borrowDate">
                         </div>
                     </div>
 
@@ -172,6 +219,7 @@
                             <option value="Nečteno">Nečteno</option>
                             <option value="Čtu">Čtu</option>
                             <option value="Přečteno">Přečteno</option>
+                            <option value="Nedočetl jsem, je to blbost">Nedočetl jsem, je to blbost</option>
                         </select>
                     </div>
 
@@ -227,6 +275,13 @@
                         <div class="stat-content">
                             <div class="stat-value" id="readingBooks">0</div>
                             <div class="stat-label">Čtu</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">📤</div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="borrowedBooks">0</div>
+                            <div class="stat-label">Vypůjčeno</div>
                         </div>
                     </div>
                     <div class="stat-card">
